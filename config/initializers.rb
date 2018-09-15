@@ -5,7 +5,7 @@ require 'pry-byebug'
 require 'selenium-webdriver'
 require 'slack-notifier'
 require './app/models/application_record'
-require './app/models/user'
+require './app/models/search_result'
 
 # setup active record
 config = YAML.safe_load(ERB.new(IO.read(File.expand_path('database.yml', __dir__))).result)

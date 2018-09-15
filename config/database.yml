@@ -2,7 +2,7 @@ development:
   adapter: mysql2
   charset: utf8mb4
   collation: utf8mb4_bin
-  database: scraping
+  database: scraping_sample
   encoding: utf8mb4
   host: <%= ENV['DATABASE_HOST'] %>
   password: <%= ENV['DATABASE_PASSWORD'] %>
