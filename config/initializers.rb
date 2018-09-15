@@ -6,6 +6,7 @@ require 'selenium-webdriver'
 require 'slack-notifier'
 require './app/models/application_record'
 require './app/models/search_result'
+require './app/scrapers/google_scraper'
 
 # setup active record
 config = YAML.safe_load(ERB.new(IO.read(File.expand_path('database.yml', __dir__))).result)
