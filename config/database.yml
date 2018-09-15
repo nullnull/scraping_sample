@@ -1,0 +1,11 @@
+development:
+  adapter: mysql2
+  charset: utf8mb4
+  collation: utf8mb4_bin
+  database: scraping
+  encoding: utf8mb4
+  host: <%= ENV['DATABASE_HOST'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  pool: 5
+  port: <%= ENV['DATABASE_PORT'] %>
+  username: <%= ENV['DATABASE_USERNAME'] %>
