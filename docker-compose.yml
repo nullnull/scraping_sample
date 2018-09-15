@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  mysql:
+    command: mysqld --character-set-server=utf8mb4
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-store:/var/lib/mysql
+  scraper:
+    build: .
+    depends_on:
+      - mysql
+      - selenium-server
+    environment:
+      SELENIUM_HOST: selenium-server
+      DATABASE_HOST: mysql
+      DATABASE_USERNAME: root
+      SLACK_WEBHOOK_URL:
+    tty: true
+    stdin_open: true
+    volumes:
+      - .:/app
+      - bundler-store:/usr/local/bundle
+  selenium-server:
+    image: selenium/standalone-chrome-debug:3.11.0-bismuth
+    ports:
+      - 4444:4444
+      - 5900:5900
+    volumes:
+      - /dev/shm:/dev/shm
+volumes:
+  mysql-store:
+  bundler-store:
+  metabase-store:
