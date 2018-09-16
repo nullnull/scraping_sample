@@ -1,0 +1,60 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: scraping-sample-cronjob
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          activeDeadlineSeconds: 600
+          restartPolicy: Never
+          containers:
+            - name: scraper
+              image: gcr.io/your-project-name/scraping-sample
+              command: ["bundle", "exec", "ruby", "app/fetch_search_results.rb"]
+              env:
+                - name: DATABASE_HOST
+                  value: 127.0.0.1
+                - name: DATABASE_PORT
+                  value: "3306"
+                - name: DATABASE_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: cloudsql-db-credentials
+                      key: username
+                - name: DATABASE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: cloudsql-db-credentials
+                      key: password
+                - name: SELENIUM_HOST
+                  value: 127.0.0.1
+                # - name: SLACK_WEBHOOK_URL
+                #   value:
+            - name: selenium
+              image: selenium/standalone-chrome-debug:3.11.0-bismuth
+              ports:
+                - containerPort: 5900
+              volumeMounts:
+                  - name: devshm
+                    mountPath: /dev/shm
+            - name: cloudsql-proxy
+              image: gcr.io/cloudsql-docker/gce-proxy:1.11
+              command: ["/cloud_sql_proxy",
+                        "-instances=your-project-name:asia-northeast1:your-cloud-sql-instance=tcp:3306",
+                        "-credential_file=/secrets/cloudsql/credentials.json"]
+              volumeMounts:
+                - name: cloudsql-instance-credentials
+                  mountPath: /secrets/cloudsql
+                  readOnly: true
+          volumes:
+            - name: cloudsql-instance-credentials
+              secret:
+                secretName: cloudsql-instance-credentials
+            - name: devshm
+              emptyDir:
+                medium: "Memory"
