@@ -1,5 +1,6 @@
 echo "pushing docker image"
-gcloud builds submit --tag gcr.io/your-project-name/scraping-sample .
+docker build . -t gcr.io/your-project-name/scraping-sample
+docker push gcr.io/your-project-name/scraping-sample
 
 echo "Initializing CronJob"
 kubectl delete cronjob scraping-sample-cronjob
