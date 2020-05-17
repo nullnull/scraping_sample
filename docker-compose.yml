@@ -1,15 +1,6 @@
 version: '3'
 
 services:
-  mysql:
-    command: mysqld --character-set-server=utf8mb4
-    environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=1
-    image: mysql:5.7
-    ports:
-      - 3306:3306
-    volumes:
-      - mysql-store:/var/lib/mysql
   scraper:
     build: .
     depends_on:
@@ -25,8 +16,17 @@ services:
     volumes:
       - .:/app
       - bundler-store:/usr/local/bundle
+  mysql:
+    command: mysqld --character-set-server=utf8mb4
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-store:/var/lib/mysql
   selenium-server:
-    image: selenium/standalone-chrome-debug:3.11.0-bismuth
+    image: selenium/standalone-chrome-debug
     ports:
       - 4444:4444
       - 5900:5900
@@ -35,4 +35,3 @@ services:
 volumes:
   mysql-store:
   bundler-store:
-  metabase-store:
