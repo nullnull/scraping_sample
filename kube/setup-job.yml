@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: scraping-sample-setup-job
+spec:
+  template:
+    spec:
+      activeDeadlineSeconds: 600
+      restartPolicy: Never
+      containers:
+        - name: scraper
+          image: gcr.io/your-project-name/scraping-sample
+          command: ["sh", "scripts/setup.sh"]
+          env:
+            - name: DATABASE_HOST
+              value: 127.0.0.1
+            - name: DATABASE_PORT
+              value: "3306"
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: username
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: password
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.11
+          command: ["/cloud_sql_proxy",
+                    "-instances=your-project-name:asia-northeast1:your-cloud-sql-instance=tcp:3306",
+                    "-credential_file=/secrets/cloudsql/credentials.json"]
+          volumeMounts:
+            - name: cloudsql-instance-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+      volumes:
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: cloudsql-instance-credentials
+        - name: devshm
+          emptyDir:
+            medium: "Memory"

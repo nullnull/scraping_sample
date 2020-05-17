@@ -2,9 +2,13 @@ echo "pushing docker image"
 docker build . -t gcr.io/your-project-name/scraping-sample
 docker push gcr.io/your-project-name/scraping-sample
 
-echo "Initializing CronJob"
+echo "Running setup job"
+kubectl delete cronjob scraping-sample-setup-job
+kubectl create -f kube/setup-job.yml
+sleep 10
+
+echo "Start CronJob"
 kubectl delete cronjob scraping-sample-cronjob
-echo "Setting CronJob configuration"
 kubectl create -f kube/cronjob.yml
 
 echo ""
