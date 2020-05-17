@@ -23,19 +23,19 @@ class GoogleScraper
   end
 
   def fetch_results
-    nodes = doc.xpath('//*[@id="rso"]/div[2]/div/div')
+    nodes = doc.xpath('//*[@id="rso"]/div')
     nodes.each do |node|
       x = SearchResult.create!(
-        description: node.css('.st').first.text,
-        title: node.css('a').first.text,
-        url: node.css('a').first.attributes["href"].value
+        description: node.css('.st').first&.text,
+        title: node.css('h3').first.text,
+        url: node.css('a').first.attributes["href"].value.slice(0, 100)
       )
       p x
     end
   end
 
   def move_next_page
-    path = doc.css('.pn').last.attributes["href"].value
+    path = doc.xpath('//*[@id="pnnext"]').last.attributes["href"].value
     @driver.get(HOST + path)
   end
 
