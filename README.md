@@ -6,8 +6,9 @@ An easy and powerful template with the minimun you need to start web scraping wi
 git clone git@github.com:nullnull/scraping_sample.git
 cd scraping_sample
 docker-compose build
-docker-compose run scraper sh setup.sh
-docker-compose run scraper bundle exec ruby app/fetch_search_results.rb
+docker-compose up -d
+docker-compose exec scraper sh setup.sh
+docker-compose exec scraper bundle exec ruby app/fetch_search_results.rb
 ```
 
 ## Monitor scraping progress wth VNC
