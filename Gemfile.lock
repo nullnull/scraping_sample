@@ -37,7 +37,7 @@ GEM
       rubyzip (>= 1.2.2)
     slack-notifier (2.3.2)
     thread_safe (0.3.6)
-    tzinfo (1.2.7)
+    tzinfo (1.2.10)
       thread_safe (~> 0.1)
     zeitwerk (2.3.0)
 
